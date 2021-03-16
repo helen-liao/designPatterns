@@ -3,7 +3,7 @@ import java.util.Stack;
 public class RemoteControl{
     private Command[] onSlots;
     private Command[] offSlots;
-    private Stack<Command> undo;
+    private Stack<Command> pressedCommands;
 
     public RemoteControl(int slots) {
         onSlots = new Command[slots];
@@ -13,13 +13,13 @@ public class RemoteControl{
     public void addCommand(int slot, Command onCommand, Command offCommand) {
         onSlots[slot] = onCommand;
         offSlots[slot] = offCommand;
-        undo = new Stack<>();
+        pressedCommands = new Stack<>();
     }
 
     public void pressOnCommand(int slot) {
         if (onSlots[slot] != null) {
             onSlots[slot].execute();
-            undo.push(onSlots[slot]);
+            pressedCommands.push(onSlots[slot]);
         }
         else
             System.out.println("No on command added for slot " + slot + "\n");
@@ -28,7 +28,7 @@ public class RemoteControl{
     public void pressOffCommand(int slot) {
         if (offSlots[slot] != null) {
             onSlots[slot].execute();
-            undo.push(offSlots[slot]);
+            pressedCommands.push(offSlots[slot]);
         }
         else
             System.out.println("No off command added for slot " + slot + "\n");
@@ -36,10 +36,10 @@ public class RemoteControl{
 
     public void pressUndoCommand() {
         System.out.println("Undoing: ");
-        if (undo.isEmpty())
+        if (pressedCommands.isEmpty())
             System.out.println("No command to undo\n");
         else
-            undo.pop().execute();
+            pressedCommands.pop().execute();
     }
 
     @Override
